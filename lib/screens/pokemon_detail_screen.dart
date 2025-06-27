@@ -133,18 +133,34 @@ class _PokemonDetailScreenState extends State<PokemonDetailScreen> {
                 }
               },
             ),
-          Consumer<PokemonProvider>(
-            builder: (context, provider, child) {
-              return IconButton(
-                icon: Icon(
-                  pokemon.isFavorite ? Icons.favorite : Icons.favorite_border,
+          IconButton(
+            icon: Icon(
+              pokemon.isFavorite ? Icons.favorite : Icons.favorite_border,
+            ),
+            onPressed: () async {
+              final provider =
+                  Provider.of<PokemonProvider>(context, listen: false);
+
+              // Verificar o estado atual antes de alterar
+              final wasFavorite = pokemon.isFavorite;
+
+              await provider.toggleFavorite(pokemon);
+
+              // Atualizar o estado local imediatamente
+              setState(() {
+                pokemon.isFavorite = !wasFavorite;
+              });
+
+              // Mostrar mensagem de feedback baseada no estado anterior
+              if (!mounted) return;
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(!wasFavorite
+                      ? '${pokemon.name.toUpperCase()} adicionado aos favoritos!'
+                      : '${pokemon.name.toUpperCase()} removido dos favoritos!'),
+                  duration: const Duration(seconds: 2),
+                  backgroundColor: !wasFavorite ? Colors.green : Colors.orange,
                 ),
-                onPressed: () async {
-                  await provider.toggleFavorite(pokemon);
-                  setState(() {
-                    pokemon.isFavorite = !pokemon.isFavorite;
-                  });
-                },
               );
             },
           ),

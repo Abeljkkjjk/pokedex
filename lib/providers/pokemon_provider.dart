@@ -57,10 +57,8 @@ class PokemonProvider with ChangeNotifier {
   Future<void> toggleFavorite(Pokemon pokemon) async {
     if (pokemon.isFavorite) {
       await DatabaseHelper.instance.removeFavorite(pokemon.id);
-      pokemon.isFavorite = false;
       _favorites.removeWhere((p) => p.id == pokemon.id);
     } else {
-      pokemon.isFavorite = true;
       await DatabaseHelper.instance.insertFavorite(pokemon);
       _favorites.add(pokemon);
     }

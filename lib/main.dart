@@ -3,10 +3,20 @@ import 'package:provider/provider.dart';
 import 'providers/pokemon_provider.dart';
 import 'screens/home_screen.dart';
 import 'database/database_helper.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await DatabaseHelper.instance.database;
+
+  // Inicializar sqflite para web
+  if (kIsWeb) {
+    // Para web, vamos usar uma abordagem diferente
+    // Vamos pular a inicialização do banco por enquanto
+  } else {
+    // Para mobile, inicializar normalmente
+    await DatabaseHelper.instance.database;
+  }
+
   runApp(const MyApp());
 }
 
